@@ -29,7 +29,10 @@ class Entry(models.Model):
 
     def save(self, *args, **kwargs):
         self.entry_text = self.entry_text.upper()
-        super().save(*args, **kwargs)                                                                                                                                                                                                                                                                                                                                                                                                                                
+        super().save(*args, **kwargs)     
+
+    def __str__(self):
+        return self.entry_text
 
 class Clue(models.Model):
     """
