@@ -14,6 +14,18 @@ from django.views import View
 from .models import Clue
 
 class DrillView(View):
+    """
+    View for displaying a random clue and processing user answers.
+
+    Handles GET requests to show a random clue and POST requests to validate
+    the user's answer. Updates session data to track the number of correct
+    answers and total drills.
+
+    Methods:
+    - get: Displays a random clue and initializes session data if needed.
+    - post: Validates the user's answer, updates session data, and redirects
+      to the answer view if correct.
+    """
     def get(self, request):
         """
         Handles GET requests to display a random clue.
@@ -38,6 +50,34 @@ class DrillView(View):
         
         return render(request, 'drill.html', {'clue': clue, 'clue_id': clue.id})
 
-    
+    def post(self, request):
+        """
+        Handles POST requests to validate the user's answer.
+
+        Checks if the submitted answer is correct, updates the session data,
+        and redirects to the answer view if correct. If incorrect, it renders
+        the 'drill.html' template again with an error message.
+
+        Args:
+            request: The HTTP request object.
+
+        Returns:
+            HttpResponse: A redirect to the answer view if the answer is correct,
+            otherwise the rendered 'drill.html' template with an error message.
+        """
+        clue_id = request.POST.get("clue_id")
+        answer = request.POST.get("answer", "").strip().upper()
+        clue = get_object_or_404(Clue, pk=clue_id)
+        
+        if answer == clue.entry.entry_text.upper():
+            # Initialize or increment the correct answer count in session
+            if 'correct_answers' not in request.session:
+                request.session['correct_answers'] = 0
+            request.session['correct_answers'] += 1
+            request.session.modified = True
+            return redirect(reverse('xword-answer', args=(clue.id,)))
+        
+        return render(request, 'drill.html', {'clue': clue, 'clue_id': clue.id, 'error': "Your answer is not correct"})    
+        
 class AnswerView(View):
     
