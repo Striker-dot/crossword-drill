@@ -77,7 +77,52 @@ class DrillView(View):
             request.session.modified = True
             return redirect(reverse('xword-answer', args=(clue.id,)))
         
-        return render(request, 'drill.html', {'clue': clue, 'clue_id': clue.id, 'error': "Your answer is not correct"})    
-        
+        return render(request, 'drill.html', {'clue': clue, 'clue_id': clue.id, 'error': "Your answer is not correct"})
+
 class AnswerView(View):
-    
+    """
+    View for displaying information about a clue and aggregating similar clues.
+
+    Handles GET requests to display the clue details, similar clues, and
+    statistics on correct answers and total drills.
+
+    Methods:
+    - get: Displays clue details, similar clues, and statistics on user performance.
+    """
+    def get(self, request, pk):
+        """
+        Handles GET requests to display information about a clue.
+
+        Retrieves the clue by its primary key, aggregates similar clues by
+        their (entry text), and gathers statistics on the user's performance
+        (correct answers and total drills). Renders the 'answer.html' template
+        with this information.
+
+        Args:
+            request: The HTTP request object.
+            pk: The primary key of the clue.
+
+        Returns:
+            HttpResponse: The rendered 'answer.html' template with clue details
+            and user performance statistics.
+        """
+        clue = get_object_or_404(Clue, pk=pk)
+        # Aggregate similar clues by their entry text and count occurrences
+        similar_clues = Clue.objects.filter(clue_text=clue.clue_text).values('entry__entry_text').annotate(count=Count('entry')).order_by('-count')
+        
+        # Get correct answers count from session
+        correct_answers = request.session.get('correct_answers', 0)
+        total_drills = request.session.get('total_drills', 0)
+        
+        context = {
+            'clue': clue,
+            'similar_clues': similar_clues,
+            'is_unique': len(similar_clues) == 1 and similar_clues[0]['count'] == 1,
+            'correct_answers': correct_answers,
+            'total_drills': total_drills
+        }
+        
+        # Include the correct message in the context to ensure it's displayed correctly
+        context['message'] = f"{clue.entry.entry_text} is the correct answer! You have now answered {correct_answers} (of {total_drills}) clues correctly."
+
+        return render(request, 'answer.html', context)
