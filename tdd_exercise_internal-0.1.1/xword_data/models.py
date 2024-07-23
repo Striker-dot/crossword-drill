@@ -27,6 +27,10 @@ class Entry(models.Model):
     """
     entry_text = models.CharField(max_length=50, unique=True)
 
+    def save(self, *args, **kwargs):
+        self.entry_text = self.entry_text.upper()
+        super().save(*args, **kwargs)                                                                                                                                                                                                                                                                                                                                                                                                                                
+
 class Clue(models.Model):
     """
     Represents a clue in a puzzle, associated with an entry and a puzzle,
