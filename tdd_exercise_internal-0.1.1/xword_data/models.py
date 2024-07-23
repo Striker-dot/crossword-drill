@@ -17,6 +17,9 @@ class Puzzle(models.Model):
     date = models.DateField()
     byline = models.CharField(max_length=255)
     publisher = models.CharField(max_length=12)
+
+    def __str__(self):
+        return f"{self.title} ({self.date}) - {self.publisher}"
     
 class Entry(models.Model):
     """
