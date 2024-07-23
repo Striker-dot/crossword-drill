@@ -123,3 +123,10 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'tdd_exercise', 'static')]
+
+# Session settings
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database-backed sessions
+SESSION_COOKIE_NAME = 'sessionid'  # Default session cookie name
+SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds (default)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_SAVE_EVERY_REQUEST = True
