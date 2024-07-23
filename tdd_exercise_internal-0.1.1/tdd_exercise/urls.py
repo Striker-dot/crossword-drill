@@ -1,21 +1,20 @@
-"""tdd_exercise URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/dev/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+URL configuration for the xword_data application.
+
+This module defines URL patterns for the xword_data app, mapping URLs to
+views. It includes:
+- `DrillView` for handling drill requests.
+- `AnswerView` for handling answer-related requests.
+
+URL Patterns:
+- `drill/`: Maps to `DrillView` for drill operations.
+- `answer/<int:pk>/`: Maps to `AnswerView` for fetching answers by primary key.
+"""
 from django.urls import path
+from xword_data.views import DrillView, AnswerView
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('drill/', DrillView.as_view(), name='xword-drill'),
+    path('answer/<int:pk>/', AnswerView.as_view(), name='xword-answer'),
 ]
