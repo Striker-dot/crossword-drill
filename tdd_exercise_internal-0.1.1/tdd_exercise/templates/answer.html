@@ -1,1 +1,26 @@
-
+{% extends "base.html" %}
+{% block content %}
+<h1>Correct!</h1>
+<p>{{ clue.clue_text }}: {{ clue.entry.entry_text }}</p>
+{% if is_unique %}
+<p>This is the only appearance of this clue.</p>
+{% elif similar_clues %}
+<table>
+    <thead>
+        <tr>
+            <th>Count</th>
+            <th>Entry</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for similar_clue in similar_clues %}
+        <tr>
+            <td>{{ similar_clue.count }}</td>
+            <td>{{ similar_clue.entry__entry_text }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+<p>{{ message }}</p>
+{% endblock %}
