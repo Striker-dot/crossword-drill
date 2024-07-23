@@ -29,7 +29,7 @@ class Entry(models.Model):
 
     def save(self, *args, **kwargs):
         self.entry_text = self.entry_text.upper()
-        super().save(*args, **kwargs)     
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.entry_text
@@ -42,4 +42,7 @@ class Clue(models.Model):
     clue_text = models.CharField(max_length=512)
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE)
     puzzle = models.ForeignKey(Puzzle, on_delete=models.CASCADE)
-    theme = models.BooleanField(default=False)                                                         
+    theme = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.clue_text} ({self.entry.entry_text})"                                                                
